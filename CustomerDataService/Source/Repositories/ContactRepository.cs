@@ -15,15 +15,21 @@ namespace CustomerDataService.Repositories
         {
 			try
 			{
-				var connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;Database=enterprise;Uid=<username>;Pwd=<password>;";
+				var connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;database=sys;user=<userName>;password=<password>;";
 
 				using var connection = new MySqlConnection(connectionString);
 
+				connection.Open();
+
 				var parameters = new { phoneNumber = phoneNumber };
 
-				var query = $"SELECT * FROM sys.Contact WHERE PhoneNumber = @phoneNumber";
+				var query = $"SELECT * FROM sys.Contact WHERE PhoneNumber=@phoneNumber";
 
-				return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { parameters });
+				var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, parameters);
+
+				connection.Close();
+
+				return result;
 			}
 			catch (Exception ex)
 			{
