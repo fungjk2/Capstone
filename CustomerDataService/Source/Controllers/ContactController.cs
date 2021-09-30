@@ -13,9 +13,10 @@ namespace CustomerDataService.Controllers
         public ContactController(IContactRepository contactRepository) => this.contactRepository = contactRepository;
 
         [HttpGet]
-        public async Task<Contact> GetContactAsync()
+        public async Task<ActionResult<Contact>> GetContactAsync()
         {
-            return new Contact { 
+            return new Contact
+            {
                 Email = "mvandenese@costar.com",
                 FirstName = "Max",
                 LastName = "Vandenesse",
