@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using CustomerDataService.Dtos;
+﻿using System;
+using System.Threading.Tasks;
 using CustomerDataService.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CustomerDataService.Controllers;
 
@@ -10,28 +11,51 @@ namespace CustomerDataService.Controllers;
 public class ContactController : ControllerBase
 {
     private readonly IContactRepository _contactRepository;
+    private readonly ILogger<ContactController> _logger;
 
-    public ContactController(IContactRepository repo)
+    public ContactController(IContactRepository repo, ILogger<ContactController> logger)
     {
         _contactRepository = repo;
+        _logger = logger;
+    }
+
+    /// <summary>
+    ///     Returns All Contacts.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<ActionResult> Get()
+    {
+        try
+        {
+            var contact = await _contactRepository.GetAllContacts();
+            return Ok(contact);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting all Contacts");
+            return BadRequest(ex);
+        }
     }
 
     /// <summary>
     ///     Get A Contact Given A Phone Number.
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult<Contact>> GetContactAsync()
+    [HttpGet("GetContact")]
+    public async Task<ActionResult> GetContactAsync(string phoneNumber)
     {
-        await _contactRepository.GetContactAsync("123432");
-
-        return new Contact
+        try
         {
-            Email = "mvandenese@costar.com",
-            FirstName = "Max",
-            LastName = "Vandenesse",
-            Id = 1,
-            PhoneNumber = "8041234567"
-        };
+            var contact = await _contactRepository.GetContactAsync(phoneNumber);
+            if (contact == null)
+                return NotFound($"No contact found by phone number {phoneNumber}.");
+            return Ok(contact);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting contact by phone number.");
+            return BadRequest(ex);
+        }
     }
 }

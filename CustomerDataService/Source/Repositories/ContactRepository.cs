@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using CustomerDataService.Dtos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
@@ -21,6 +23,21 @@ public class ContactRepository : IContactRepository
     /// <summary>
     ///     Returns a contact given a phone number.
     /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<ContactEntity>> GetAllContacts()
+    {
+        await using var connection = new MySqlConnection(_awsMySqlConnectionString);
+
+        var query = "SELECT * FROM sys.Contact";
+
+        var result = await connection.QueryAsync<ContactEntity>(query);
+
+        return result;
+    }
+
+    /// <summary>
+    ///     Returns a contact given a phone number.
+    /// </summary>
     /// <param name="phoneNumber">The phone number used to search for a contact.</param>
     /// <returns></returns>
     public async Task<ContactEntity> GetContactAsync(string phoneNumber)
@@ -29,9 +46,9 @@ public class ContactRepository : IContactRepository
         {
             await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
-            var query = $"SELECT * FROM sys.Contact WHERE PhoneNumber={phoneNumber}";
+            var query = "SELECT * FROM sys.Contact WHERE PhoneNumber=@phoneNumber";
 
-            var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query);
+            var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { phoneNumber });
 
             return result;
         }
