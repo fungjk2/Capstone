@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace CustomerDataService.Repositories
+namespace CustomerDataService.Repositories;
+
+public interface IContactRepository
 {
-    public interface IContactRepository
-    {
-        public Task<ContactEntity> GetContactAsync(string phoneNumber);
-    }
+    public Task<ContactEntity> GetContactAsync(string phoneNumber);
 }
