@@ -1,36 +1,40 @@
-﻿using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
 using static Dapper.SqlMapper;
 
 namespace CustomerDataService.Repositories
 {
-	public class ContactRepository : IContactRepository
+    public class ContactRepository : IContactRepository
     {
-		private readonly ILogger<ContactRepository> logger;
-		public ContactRepository(ILogger<ContactRepository> logger) => this.logger = logger;
+        private readonly ILogger<ContactRepository> logger;
 
-		public async Task<ContactEntity> GetContactAsync(string phoneNumber)
+        public ContactRepository(ILogger<ContactRepository> logger)
         {
-			try
-			{
-				var connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;Database=enterprise;Uid=<username>;Pwd=<password>;";
+            this.logger = logger;
+        }
 
-				using var connection = new MySqlConnection(connectionString);
+        public async Task<ContactEntity> GetContactAsync(string phoneNumber)
+        {
+            try
+            {
+                const string connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;Database=enterprise;Uid=<username>;Pwd=<password>;";
 
-				var parameters = new { phoneNumber = phoneNumber };
+                await using var connection = new MySqlConnection(connectionString);
 
-				var query = $"SELECT * FROM sys.Contact WHERE PhoneNumber = @phoneNumber";
+                var parameters = new { phoneNumber };
 
-				return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { parameters });
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
+                var query = "SELECT * FROM sys.Contact WHERE PhoneNumber = @phoneNumber";
 
-				throw;
-			}
-		}
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { parameters });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
+
+                throw;
+            }
+        }
     }
 }

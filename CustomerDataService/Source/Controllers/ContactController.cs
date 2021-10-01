@@ -1,7 +1,7 @@
-﻿using CustomerDataService.Dtos;
+﻿using System.Threading.Tasks;
+using CustomerDataService.Dtos;
 using CustomerDataService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace CustomerDataService.Controllers
 {
@@ -9,13 +9,19 @@ namespace CustomerDataService.Controllers
     [Route("[controller]")]
     public class ContactController : ControllerBase
     {
-        private readonly IContactRepository contactRepository;
-        public ContactController(IContactRepository contactRepository) => this.contactRepository = contactRepository;
+        private readonly IContactRepository _contactRepository;
+
+        public ContactController(IContactRepository repo)
+        {
+            _contactRepository = repo;
+        }
 
         [HttpGet]
         public async Task<Contact> GetContactAsync()
         {
-            return new Contact { 
+            await _contactRepository.GetContactAsync("123456789");
+            return new Contact
+            {
                 Email = "mvandenese@costar.com",
                 FirstName = "Max",
                 LastName = "Vandenesse",
