@@ -17,9 +17,8 @@ namespace CustomerDataService.Controllers
         }
 
         [HttpGet]
-        public async Task<Contact> GetContactAsync()
+        public async Task<ActionResult<Contact>> GetContactAsync()
         {
-            await _contactRepository.GetContactAsync("123456789");
             return new Contact
             {
                 Email = "mvandenese@costar.com",

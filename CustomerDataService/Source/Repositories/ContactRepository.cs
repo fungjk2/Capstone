@@ -17,21 +17,27 @@ namespace CustomerDataService.Repositories
 
         public async Task<ContactEntity> GetContactAsync(string phoneNumber)
         {
-            try
-            {
-                const string connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;Database=enterprise;Uid=<username>;Pwd=<password>;";
+			try
+			{
+				var connectionString = "Server=enterprise.c7ctqwx485et.us-east-1.rds.amazonaws.com;Port=3306;database=sys;user=<userName>;password=<password>;";
 
                 await using var connection = new MySqlConnection(connectionString);
 
-                var parameters = new { phoneNumber };
+				connection.Open();
 
-                var query = "SELECT * FROM sys.Contact WHERE PhoneNumber = @phoneNumber";
+				var parameters = new { phoneNumber = phoneNumber };
 
-                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { parameters });
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
+				var query = $"SELECT * FROM sys.Contact WHERE PhoneNumber=@phoneNumber";
+
+				var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, parameters);
+
+				connection.Close();
+
+				return result;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
 
                 throw;
             }
