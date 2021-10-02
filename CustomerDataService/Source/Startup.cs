@@ -8,51 +8,53 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace CustomerDataService;
-
-public class Startup
+namespace CustomerDataService
 {
-    public Startup(IConfiguration configuration)
+
+    public class Startup
     {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddControllers();
-
-        services.AddScoped<IContactRepository, ContactRepository>();
-
-        services.AddSwaggerGen(c =>
+        public Startup(IConfiguration configuration)
         {
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath);
-        });
-    }
+            Configuration = configuration;
+        }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+        public IConfiguration Configuration { get; }
 
-        app.UseSwagger();
-
-        app.UseSwaggerUI(c =>
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customer Data Service");
-            c.RoutePrefix = string.Empty;
-        });
+            services.AddControllers();
 
-        app.UseHttpsRedirection();
+            services.AddScoped<IContactRepository, ContactRepository>();
 
-        app.UseRouting();
+            services.AddSwaggerGen(c =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+        }
 
-        app.UseAuthorization();
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customer Data Service");
+                c.RoutePrefix = string.Empty;
+            });
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
     }
 }

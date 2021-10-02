@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using CustomerDataService.Dtos;
 
-namespace CustomerDataService.Repositories;
-
-public interface IContactRepository
+namespace CustomerDataService.Repositories
 {
-    public Task<ContactEntity> GetContactAsync(string phoneNumber);
-    public Task<IEnumerable<ContactEntity>> GetAllContacts();
+
+    public interface IContactRepository
+    {
+        public Task<ContactEntity> GetContactAsync(string phoneNumber);
+    }
 }
