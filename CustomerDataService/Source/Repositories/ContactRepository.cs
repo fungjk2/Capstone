@@ -7,56 +7,43 @@ using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using static Dapper.SqlMapper;
 
-namespace CustomerDataService.Repositories;
-
-public class ContactRepository : IContactRepository
+namespace CustomerDataService.Repositories
 {
-    private readonly string _awsMySqlConnectionString;
-    private readonly ILogger<ContactRepository> _logger;
 
-    public ContactRepository(IConfiguration config, ILogger<ContactRepository> logger)
+    public class ContactRepository : IContactRepository
     {
-        _awsMySqlConnectionString = config.GetConnectionString("awsDatabase");
-        _logger = logger;
-    }
+        private readonly string _awsMySqlConnectionString;
+        private readonly ILogger<ContactRepository> _logger;
 
-    /// <summary>
-    ///     Returns a contact given a phone number.
-    /// </summary>
-    /// <returns></returns>
-    public async Task<IEnumerable<ContactEntity>> GetAllContacts()
-    {
-        await using var connection = new MySqlConnection(_awsMySqlConnectionString);
-
-        var query = "SELECT * FROM sys.Contact";
-
-        var result = await connection.QueryAsync<ContactEntity>(query);
-
-        return result;
-    }
-
-    /// <summary>
-    ///     Returns a contact given a phone number.
-    /// </summary>
-    /// <param name="phoneNumber">The phone number used to search for a contact.</param>
-    /// <returns></returns>
-    public async Task<ContactEntity> GetContactAsync(string phoneNumber)
-    {
-        try
+        public ContactRepository(IConfiguration config, ILogger<ContactRepository> logger)
         {
-            await using var connection = new MySqlConnection(_awsMySqlConnectionString);
-
-            var query = "SELECT * FROM sys.Contact WHERE PhoneNumber=@phoneNumber";
-
-            var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { phoneNumber });
-
-            return result;
+            _awsMySqlConnectionString = config.GetConnectionString("awsDatabase");
+            _logger = logger;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
 
-            throw;
+        /// <summary>
+        ///     Returns a contact given a phone number.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number used to search for a contact.</param>
+        /// <returns></returns>
+        public async Task<ContactEntity> GetContactAsync(string phoneNumber)
+        {
+            try
+            {
+                await using var connection = new MySqlConnection(_awsMySqlConnectionString);
+
+                var query = "SELECT * FROM sys.Contact WHERE PhoneNumber=@phoneNumber";
+
+                var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { phoneNumber });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve contact {phoneNumber}");
+
+                throw;
+            }
         }
     }
 }

@@ -4,58 +4,41 @@ using CustomerDataService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CustomerDataService.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class ContactController : ControllerBase
+namespace CustomerDataService.Controllers
 {
-    private readonly IContactRepository _contactRepository;
-    private readonly ILogger<ContactController> _logger;
 
-    public ContactController(IContactRepository repo, ILogger<ContactController> logger)
+    [ApiController]
+    [Route("[controller]")]
+    public class ContactController : ControllerBase
     {
-        _contactRepository = repo;
-        _logger = logger;
-    }
+        private readonly IContactRepository _contactRepository;
+        private readonly ILogger<ContactController> _logger;
 
-    /// <summary>
-    ///     Returns All Contacts.
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult> Get()
-    {
-        try
+        public ContactController(IContactRepository repo, ILogger<ContactController> logger)
         {
-            var contact = await _contactRepository.GetAllContacts();
-            return Ok(contact);
+            _contactRepository = repo;
+            _logger = logger;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting all Contacts");
-            return BadRequest(ex);
-        }
-    }
 
-    /// <summary>
-    ///     Get A Contact Given A Phone Number.
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("GetContact")]
-    public async Task<ActionResult> GetContactAsync(string phoneNumber)
-    {
-        try
+        /// <summary>
+        ///     Get A Contact Given A Phone Number.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetContact")]
+        public async Task<ActionResult> GetContactAsync(string phoneNumber)
         {
-            var contact = await _contactRepository.GetContactAsync(phoneNumber);
-            if (contact == null)
-                return NotFound($"No contact found by phone number {phoneNumber}.");
-            return Ok(contact);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting contact by phone number.");
-            return BadRequest(ex);
+            try
+            {
+                var contact = await _contactRepository.GetContactAsync(phoneNumber);
+                if (contact == null)
+                    return NotFound($"No contact found by phone number {phoneNumber}.");
+                return Ok(contact);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting contact by phone number.");
+                return BadRequest(ex);
+            }
         }
     }
 }
