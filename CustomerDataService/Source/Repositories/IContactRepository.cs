@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using CustomerDataService.Dtos;
+﻿using System.Threading.Tasks;
+using CustomerDataService.Entities;
 
 namespace CustomerDataService.Repositories
 {

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using CustomerDataService.Dtos;
+using CustomerDataService.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
@@ -9,7 +8,6 @@ using static Dapper.SqlMapper;
 
 namespace CustomerDataService.Repositories
 {
-
     public class ContactRepository : IContactRepository
     {
         private readonly string _awsMySqlConnectionString;
