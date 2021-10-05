@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CustomerDataService.Dtos;
 using CustomerDataService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,7 @@ namespace CustomerDataService.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("contact")]
     public class ContactController : ControllerBase
     {
         private readonly IContactRepository _contactRepository;
@@ -21,18 +22,27 @@ namespace CustomerDataService.Controllers
         }
 
         /// <summary>
-        ///     Get A Contact Given A Phone Number.
+        /// Get A Contact Given A Phone Number.
         /// </summary>
-        /// <returns></returns>
-        [HttpGet("GetContact")]
-        public async Task<ActionResult> GetContactAsync(string phoneNumber)
+        /// <returns>Contact data contract</returns>
+        [HttpGet]
+        public async Task<ActionResult<Contact>> GetContactAsync(string phoneNumber)
         {
             try
             {
                 var contact = await _contactRepository.GetContactAsync(phoneNumber);
+
                 if (contact == null)
                     return NotFound($"No contact found by phone number {phoneNumber}.");
-                return Ok(contact);
+
+                return Ok(new Contact
+                {
+                    Id = contact.ContactId,
+                    Email = contact.Email,
+                    FirstName = contact.FirstName,
+                    LastName = contact.LastName,
+                    PhoneNumber = contact.PhoneNumber
+                });
             }
             catch (Exception ex)
             {
