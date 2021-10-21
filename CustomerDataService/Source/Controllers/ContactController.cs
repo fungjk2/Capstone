@@ -20,7 +20,7 @@ namespace CustomerDataService.Controllers
             _logger = logger;
         }
 
-        /// <summary>
+        /// <summary>main
         ///     Get A Contact Given A Phone Number.
         /// </summary>
         /// <returns></returns>
@@ -40,5 +40,15 @@ namespace CustomerDataService.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpPost]
+        public async Task<int> postContactAsyncm(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx)
+        {
+           return await _contactRepository.postContactAsync(FirstNamex, LastNamex, PhoneNumberx, Emailx);
+
+        }
+
+
+
+
     }
 }
