@@ -47,14 +47,24 @@ namespace CustomerDataService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting contact by phone number.");
+
                 return BadRequest(ex);
             }
         }
-        [HttpPost]
-        public async Task<int> postContactAsyncm(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx)
-        {
-           return await _contactRepository.postContactAsync(FirstNamex, LastNamex, PhoneNumberx, Emailx);
 
+        [HttpPost]
+        public async Task<ActionResult<Contact>> PostContactAsync(CreateContactRequest request)
+        {
+           var contact = await _contactRepository.CreateContactAsync(request);
+
+            return Ok(new Contact
+            {
+                Id = contact?.ContactId ?? default,
+                Email = contact?.Email,
+                FirstName = contact?.FirstName,
+                LastName = contact?.LastName,
+                PhoneNumber = contact?.PhoneNumber
+            });
         }
 
 

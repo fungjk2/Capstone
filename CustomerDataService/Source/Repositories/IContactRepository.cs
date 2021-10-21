@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CustomerDataService.Dtos;
 using CustomerDataService.Entities;
 
 namespace CustomerDataService.Repositories
@@ -7,7 +8,7 @@ namespace CustomerDataService.Repositories
     public interface IContactRepository
     {
         public Task<ContactEntity> GetContactAsync(string phoneNumber);
-        public Task<int> postContactAsync(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx);
+        public Task<ContactEntity?> CreateContactAsync(CreateContactRequest request);
     }
     
 }
