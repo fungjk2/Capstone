@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CustomerDataService.Dtos;
 using CustomerDataService.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace CustomerDataService.Repositories
         }
 
         /// <summary>
-        ///     Returns a contact given a phone number.
+        /// Returns a contact given a phone number.
         /// </summary>
         /// <param name="phoneNumber">The phone number used to search for a contact.</param>
         /// <returns></returns>
@@ -44,21 +45,20 @@ namespace CustomerDataService.Repositories
             }
         }
 
-
-        public async Task<int> postContactAsync(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx)
+        /// <summary>
+        /// Create a contact
+        /// </summary>
+        /// <param name="request">Contact to create</param>
+        /// <returns>Create Contact</returns>
+        public async Task<ContactEntity?> CreateContactAsync(CreateContactRequest request)
         {
             try
             {
                 await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
-                MySqlCommand cmd = new MySqlCommand("insert into sys.Contact (FirstName , LastName , Email , PhoneNumber) values ('FirstNamex' ,'LastNamex','Emailx','PhoneNumberx')", connection);
+                var query = "INSERT INTO sys.Contact(FirstName, LastName, Email, PhoneNumber) VALUES(@firstName, @lastName, @email, @phoneNumber)";
 
-                connection.Open();
-                cmd.ExecuteNonQuery();
-                connection.Close();
-                var result = 1;
-
-                return result;
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { request.FirstName, request.LastName, request.Email, request.PhoneNumber });
             }
             catch (Exception ex)
             {
