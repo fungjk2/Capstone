@@ -1,4 +1,4 @@
-﻿namespace CustomerDataService.Dtos
+﻿namespace CustomerDataService.Entities
 {
 
     public class ContactEntity
