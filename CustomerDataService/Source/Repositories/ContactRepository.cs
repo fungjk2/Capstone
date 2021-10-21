@@ -43,5 +43,30 @@ namespace CustomerDataService.Repositories
                 throw;
             }
         }
+
+
+        public async Task<int> postContactAsync(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx)
+        {
+            try
+            {
+                await using var connection = new MySqlConnection(_awsMySqlConnectionString);
+
+                MySqlCommand cmd = new MySqlCommand("insert into sys.Contact (FirstName , LastName , Email , PhoneNumber) values ('FirstNamex' ,'LastNamex','Emailx','PhoneNumberx')", connection);
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                var result = 1;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to create contact object");
+
+                throw;
+            }
+        }
+
     }
 }

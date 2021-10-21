@@ -50,5 +50,15 @@ namespace CustomerDataService.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpPost]
+        public async Task<int> postContactAsyncm(string FirstNamex, string LastNamex, string PhoneNumberx, string Emailx)
+        {
+           return await _contactRepository.postContactAsync(FirstNamex, LastNamex, PhoneNumberx, Emailx);
+
+        }
+
+
+
+
     }
 }
