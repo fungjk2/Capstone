@@ -58,7 +58,9 @@ namespace CustomerDataService.Repositories
 
                 var query = "INSERT INTO sys.Contact(FirstName, LastName, Email, PhoneNumber) VALUES(@firstName, @lastName, @email, @phoneNumber)";
 
-                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { request.FirstName, request.LastName, request.Email, request.PhoneNumber });
+
+                var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { request.FirstName, request.LastName, request.Email, request.PhoneNumber });
+                return result;
             }
             catch (Exception ex)
             {
@@ -67,6 +69,39 @@ namespace CustomerDataService.Repositories
                 throw;
             }
         }
+        public async Task<ContactEntity?> UpdateContactAsync(int id, string firstName, string lastName, string email, string phoneNumber)
+        {
+            try
+            {
+                await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
+                var query = "UPDATE sys.Contact SET FirstName=@firstName, LastName=@lastName, Email=@email, PhoneNumber=@phoneNumber WHERE ContactId = @id";
+
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { id ,firstName, lastName, email, phoneNumber });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to update contact object");
+
+                throw;
+            }
+        }
+        public async Task<ContactEntity?> DELETEContactAsync(int id)
+        {
+            try
+            {
+                await using var connection = new MySqlConnection(_awsMySqlConnectionString);
+
+                var query = "DELETE from sys.Contact WHERE ContactId = @id";
+
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to update contact object");
+
+                throw;
+            }
+        }
     }
 }

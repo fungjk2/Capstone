@@ -55,7 +55,9 @@ namespace CustomerDataService.Controllers
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContactAsync(CreateContactRequest request)
         {
-           var contact = await _contactRepository.CreateContactAsync(request);
+            try
+            {
+                var contact = await _contactRepository.CreateContactAsync(request);
 
             return Ok(new Contact
             {
@@ -65,10 +67,55 @@ namespace CustomerDataService.Controllers
                 LastName = contact?.LastName,
                 PhoneNumber = contact?.PhoneNumber
             });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting contact by phone number.");
+
+                return BadRequest(ex);
+            }
         }
 
 
+        [HttpPut("/{id}")]
+        public async Task<ActionResult<Contact>> PutContactAsync(int id, string Email, string FirstName, string LastName, string PhoneNumber)
+        {
+
+            var contact = await _contactRepository.UpdateContactAsync(id, Email, FirstName, LastName, PhoneNumber);
+
+            if (id == null)
+            {
+                return NotFound($"ID is required.");
+            }
 
 
+            return Ok(new Contact
+            {
+
+                Email = contact?.Email,
+                FirstName = contact?.FirstName,
+                LastName = contact?.LastName,
+                PhoneNumber = contact?.PhoneNumber
+            });
+
+
+        }
+        [HttpDelete("/{id}")]
+        public async Task<ActionResult<Contact>> DELETEContactAsync(int id)
+        {
+
+            var contact = await _contactRepository.DELETEContactAsync(id);
+
+
+            return Ok(new Contact
+            {
+
+                Email = contact.Email,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                PhoneNumber = contact.PhoneNumber
+            });
+
+        }
     }
 }
