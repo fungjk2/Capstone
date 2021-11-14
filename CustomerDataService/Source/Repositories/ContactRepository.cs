@@ -56,10 +56,11 @@ namespace CustomerDataService.Repositories
             {
                 await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
-                var query = "INSERT INTO sys.Contact(FirstName, LastName, Email, PhoneNumber) VALUES(@firstName, @lastName, @email, @phoneNumber)";
+                
 
 
-                var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { request.FirstName, request.LastName, request.Email, request.PhoneNumber });
+                var result = await connection.QueryFirstOrDefaultAsync<ContactEntity>("CALL createContact (@firstNameVar, @lastNameVar, @emailVar, @phoneNumberVar)", 
+                                                        new { firstNameVar = request.FirstName, lastNameVar = request.LastName, emailVar = request.Email, phoneNumberVar = request.PhoneNumber });
                 return result;
             }
             catch (Exception ex)
@@ -75,9 +76,10 @@ namespace CustomerDataService.Repositories
             {
                 await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
-                var query = "UPDATE sys.Contact SET FirstName=@firstName, LastName=@lastName, Email=@email, PhoneNumber=@phoneNumber WHERE ContactId = @id";
+                
 
-                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { id ,firstName, lastName, email, phoneNumber });
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>("CALL updateContact (@contactIDVar, @emailVar, @firstNameVar, @lastNameVar, @phoneNumberVar)",
+                                    new {contactIDVar = id , emailVar = email, firstNameVar = firstName, lastNameVar = lastName, phoneNumberVar = phoneNumber });
             }
             catch (Exception ex)
             {
@@ -92,9 +94,9 @@ namespace CustomerDataService.Repositories
             {
                 await using var connection = new MySqlConnection(_awsMySqlConnectionString);
 
-                var query = "DELETE from sys.Contact WHERE ContactId = @id";
+                
 
-                return await connection.QueryFirstOrDefaultAsync<ContactEntity>(query, new { id });
+                return await connection.QueryFirstOrDefaultAsync<ContactEntity>("CALL sys.DeleteContact (@contactIDVar )", new { contactIDVar = id });
             }
             catch (Exception ex)
             {
