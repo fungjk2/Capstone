@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using CustomerDataService.Entities;
 
 namespace CustomerDataService.Dtos
 {
@@ -19,5 +20,15 @@ namespace CustomerDataService.Dtos
 
         [DataMember]
         public string? Email { get; set; }
+
+        public Contact(ContactEntity contact)
+        {
+            Id = contact.ContactId;
+            FirstName = contact.FirstName;
+            LastName = contact.LastName;
+            Email = contact.Email;
+            PhoneNumber = contact.PhoneNumber;
+        }
+       
     }
 }

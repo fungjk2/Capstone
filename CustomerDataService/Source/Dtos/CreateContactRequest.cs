@@ -6,6 +6,7 @@ namespace CustomerDataService.Dtos
     public class CreateContactRequest
     {
         public CreateContactRequest() { }
+
         public CreateContactRequest(string firstName, string lastName, string email, string phoneNumber)
         {
             this.FirstName = firstName;

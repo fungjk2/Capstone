@@ -35,14 +35,10 @@ namespace CustomerDataService.Controllers
                 if (contact == null)
                     return NotFound($"No contact found by phone number {phoneNumber}.");
 
-                return Ok(new Contact
-                {
-                    Id = contact.ContactId,
-                    Email = contact.Email,
-                    FirstName = contact.FirstName,
-                    LastName = contact.LastName,
-                    PhoneNumber = contact.PhoneNumber
-                });
+                return Ok(new Contact(await _contactRepository.GetContactAsync(phoneNumber)));
+                
+                    
+                
             }
             catch (Exception ex)
             {
@@ -57,16 +53,9 @@ namespace CustomerDataService.Controllers
         {
             try
             {
-                var contact = await _contactRepository.CreateContactAsync(request);
 
-            return Ok(new Contact
-            {
-                Id = contact?.ContactId ?? default,
-                Email = contact?.Email,
-                FirstName = contact?.FirstName,
-                LastName = contact?.LastName,
-                PhoneNumber = contact?.PhoneNumber
-            });
+                return Ok(new Contact(await _contactRepository.CreateContactAsync(request)));
+           
             }
             catch (Exception ex)
             {
@@ -78,44 +67,50 @@ namespace CustomerDataService.Controllers
 
 
         [HttpPut("/{id}")]
-        public async Task<ActionResult<Contact>> PutContactAsync(int id, string Email, string FirstName, string LastName, string PhoneNumber)
+        public async Task<ActionResult<Contact>> PutContactAsync(int id, UpdateContactRequest request)
         {
-
-            var contact = await _contactRepository.UpdateContactAsync(id, Email, FirstName, LastName, PhoneNumber);
-
-            if (id == null)
+            try
             {
-                return NotFound($"ID is required.");
+
+                if (id == 0)
+                {
+                    return NotFound($"ID is required.");
+                }
+
+                var rcontact = await _contactRepository.UpdateContactAsync(id, request.FirstName, request.LastName, request.Email, request.PhoneNumber);
+
+
+                return Ok(rcontact);
+            }
+                catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating contact.");
+
+                return BadRequest(ex);
             }
 
+              
 
-            return Ok(new Contact
-            {
-
-                Email = contact?.Email,
-                FirstName = contact?.FirstName,
-                LastName = contact?.LastName,
-                PhoneNumber = contact?.PhoneNumber
-            });
-
-
-        }
+            
+            }
         [HttpDelete("/{id}")]
         public async Task<ActionResult<Contact>> DELETEContactAsync(int id)
         {
+            try { 
+                var contact = await _contactRepository.DELETEContactAsync(id);
 
-            var contact = await _contactRepository.DELETEContactAsync(id);
 
-
-            return Ok(new Contact
+                return Ok(new Contact(await _contactRepository.DELETEContactAsync(id))
+                {
+                    
+                });
+            }
+                catch (Exception ex)
             {
+                _logger.LogError(ex, "Error updating contact.");
 
-                Email = contact.Email,
-                FirstName = contact.FirstName,
-                LastName = contact.LastName,
-                PhoneNumber = contact.PhoneNumber
-            });
-
-        }
+            return BadRequest(ex);
+    }
+}
     }
 }

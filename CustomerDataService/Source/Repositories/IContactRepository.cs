@@ -9,7 +9,7 @@ namespace CustomerDataService.Repositories
     {
         public Task<ContactEntity> GetContactAsync(string phoneNumber);
         public Task<ContactEntity?> CreateContactAsync(CreateContactRequest request);
-        public Task<ContactEntity?> UpdateContactAsync(int id, string firstName, string lastName, string email, string phoneNumber);
+        public Task<ContactEntity?> UpdateContactAsync(int id, string? firstName, string? lastName, string? email, string? phoneNumber);
         public Task<ContactEntity?> DELETEContactAsync(int id);
     }
     
