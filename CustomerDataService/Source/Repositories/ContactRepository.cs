@@ -70,13 +70,11 @@ namespace CustomerDataService.Repositories
                 throw;
             }
         }
-        public async Task<ContactEntity?> UpdateContactAsync(int id, string firstName, string lastName, string email, string phoneNumber)
+        public async Task<ContactEntity?> UpdateContactAsync(int id, string? firstName, string? lastName, string? email, string? phoneNumber)
         {
             try
             {
                 await using var connection = new MySqlConnection(_awsMySqlConnectionString);
-
-                
 
                 return await connection.QueryFirstOrDefaultAsync<ContactEntity>("CALL updateContact (@contactIDVar, @emailVar, @firstNameVar, @lastNameVar, @phoneNumberVar)",
                                     new {contactIDVar = id , emailVar = email, firstNameVar = firstName, lastNameVar = lastName, phoneNumberVar = phoneNumber });

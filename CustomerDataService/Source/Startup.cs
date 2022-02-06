@@ -1,3 +1,4 @@
+
 using System;
 using System.IO;
 using System.Reflection;
@@ -23,14 +24,14 @@ namespace CustomerDataService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers();//?
 
-            services.AddScoped<IContactRepository, ContactRepository>();
+            services.AddScoped<IContactRepository, ContactRepository>();//?
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(c =>//what's going on?
             {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";//?
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);//?
                 c.IncludeXmlComments(xmlPath);
             });
         }
